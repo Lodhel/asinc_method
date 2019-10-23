@@ -8,20 +8,11 @@ routes = web.RouteTableDef()
 @routes.view("/")
 class MainViewSet(web.View):
     async def get(self):
-        data = {'request': 'info'}
+        session = get_session(self.request)
+        cookie = session.cr_frame.f_locals["request"].cookies
+        data = {'session': str(cookie)}
         return web.json_response(data)
 
     async def post(self):
         data = {'request': 'info'}
-        return web.json_response(data)
-
-"""
-@routes.view("api/user/")
-class UserViewSet(web.View):
-
-    async def handler(self, request):
-        session = await get_session(request)
-        last_visit = session['last_visit'] if 'last_visit' in session else None
-        text = 'Last visited: {}'.format(last_visit)
-        return web.Response(text=text)
-"""
+        await web.json_response(data)
